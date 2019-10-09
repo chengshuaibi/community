@@ -1,0 +1,27 @@
+body{
+    background-color: #efefef;
+}
+.main{
+    background-color: white;
+    margin: 30px;
+}
+.publishError{
+    float: left;
+    margin-bottom: 15px;
+}
+.publish{
+    float: right;
+    margin-bottom: 15px;
+}
+.avatar{
+    width: 38px ;
+    height: 38px;
+}
+.text-dsc{
+    font-size:12px ;
+    font-weight:normal;
+    color: #999;
+}
+.profile.section{
+    margin-top: 15px;
+}
