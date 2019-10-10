@@ -15,7 +15,7 @@ import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
  * @date 2019/10/9 0009 下午 13:52
  */
 @Configuration
-@EnableWebMvc
+
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private   SessionINterceptor sessionINterceptor;

@@ -5,9 +5,11 @@ import cheng.community.provider.GitHubProvider;
 import cheng.community.dto.AccessTokenDTO;
 import cheng.community.dto.GithubUser;
 import cheng.community.model.User;
+import cheng.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -30,9 +32,8 @@ public class AuthorizeController {
     private String setclient_secret;
     @Value("${github.Redirect_uri}")
     private String redirect_uri;
-
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
 
     @GetMapping("/callback")
@@ -55,10 +56,10 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtcreate(System.currentTimeMillis());
-            user.setGmtmodified(user.getGmtcreate());
+
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.insert(user);
+            //判断是否存在user，相同则不创建，不同则创建
+            userService.createOrUpdate(user);
             //发送cookies携带token
             response.addCookie(new Cookie("token",token));
             //登录成功
@@ -68,6 +69,15 @@ public class AuthorizeController {
             //登录失败
         return "redirect:/";
         }
+
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+            request.getSession().invalidate();
+            Cookie cookie=new Cookie("token",null);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+            return "redirect:/";
 
     }
 

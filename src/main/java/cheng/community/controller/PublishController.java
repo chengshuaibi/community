@@ -1,14 +1,15 @@
 package cheng.community.controller;
 
+import cheng.community.dto.QuestionDTO;
 import cheng.community.mapper.QuestionMapper;
 import cheng.community.model.Question;
 import cheng.community.model.User;
+import cheng.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -18,8 +19,20 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
+
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
+
+    @GetMapping("publish/{id}")
+    public String edit(@PathVariable(name = "id")Integer id,
+                       Model model){
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
 
 
     @GetMapping("/publish")
@@ -30,9 +43,10 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(value = "title",required = false) String title,
+            @RequestParam(value = "description",required = false) String description,
+            @RequestParam(value = "tag",required = false) String tag,
+            @RequestParam(value = "id",required = false)Integer id,
             HttpServletRequest request,
             Model model) {
         /*
@@ -59,6 +73,10 @@ public class PublishController {
             model.addAttribute("error","标签不能为空");
             return "publish";
         }
+        User user = (User)request.getSession().getAttribute("user");
+        if (user==null){
+            model.addAttribute("error","用户未登录");
+        }
 
         Question question = new Question();
         question.setTitle(title);
@@ -66,14 +84,10 @@ public class PublishController {
         question.setTag(tag);
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
-        User user = (User)request.getSession().getAttribute("user");
-        if (user==null){
-                model.addAttribute("error","用户未登录");
-            }
-        question.setCreator(user.getId  ());
-
-
-        questionMapper.create(question);
+        question.setCreator(user.getId());
+        question.setId(id);
+        //判断问题是否在数据库中存在，有就创建，没有就更新
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }
