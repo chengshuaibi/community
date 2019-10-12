@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="../static/js/jquery-3.4.1.min.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title ><陈陈的社区></陈陈的社区></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript  "></script>
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="jumbotron">
+        <h1>出错了,请返回首页</h1>
+        <p th:text="${message}"></p>
+        <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
+    </div>
+</div>
+</body>
+</html>

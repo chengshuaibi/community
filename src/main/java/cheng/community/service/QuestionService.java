@@ -1,8 +1,12 @@
 package cheng.community.service;
 
 
+import cheng.community.Exception.CustomizeErrorCode;
+import cheng.community.Exception.CustomizeException;
+import cheng.community.Exception.ICustomizeErrorCode;
 import cheng.community.dto.PaginationDTO;
 import cheng.community.dto.QuestionDTO;
+import cheng.community.mapper.QuestionExtMapper;
 import cheng.community.mapper.QuestionMapper;
 import cheng.community.mapper.UserMapper;
 import cheng.community.model.Question;
@@ -28,6 +32,9 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
     private Integer offset;
 
     public PaginationDTO list(Integer page, Integer size){
@@ -65,7 +72,7 @@ public class QuestionService {
 
     /*分页操作*/
 
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO=new PaginationDTO();
         QuestionExample questionExample=new QuestionExample();
         questionExample.createCriteria().
@@ -104,8 +111,11 @@ public class QuestionService {
     }
 
     //按照id查询问题
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question  = questionMapper.selectByPrimaryKey(id);
+        if (question==null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NO_FIND);
+        }
         QuestionDTO questionDTO=new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         User user= userMapper.selectByPrimaryKey(question.getCreator());
@@ -128,7 +138,20 @@ public class QuestionService {
             updateQuestion.setTag(question.getTag());
             QuestionExample example=new QuestionExample();
             example.createCriteria().andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion,example);
+            int i = questionMapper.updateByExampleSelective(updateQuestion, example);
+            if (i!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NO_FIND);
+            }
         }
+    }
+
+    public void incView(Long id) {
+        Question question=new Question();
+        question.setId(id);
+        question.setViewCount(1);
+
+        questionExtMapper.incView(question);
+
+
     }
 }

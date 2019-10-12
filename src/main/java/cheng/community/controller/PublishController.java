@@ -1,7 +1,6 @@
 package cheng.community.controller;
 
 import cheng.community.dto.QuestionDTO;
-import cheng.community.mapper.QuestionMapper;
 import cheng.community.model.Question;
 import cheng.community.model.User;
 import cheng.community.service.QuestionService;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ *
+ * 发布界面
  * @author cheng
  * @date 2019/10/5 0005 上午 11:52
  */
@@ -24,7 +25,7 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("publish/{id}")
-    public String edit(@PathVariable(name = "id")Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model){
         QuestionDTO question = questionService.getById(id);
         model.addAttribute("title",question.getTitle());
@@ -46,7 +47,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
-            @RequestParam(value = "id",required = false)Integer id,
+            @RequestParam(value = "id",required = false) Long id,
             HttpServletRequest request,
             Model model) {
         /*

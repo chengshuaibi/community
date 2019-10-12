@@ -3,6 +3,7 @@ package cheng.community.service;
 import cheng.community.mapper.UserMapper;
 import cheng.community.model.User;
 import cheng.community.model.UserExample;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,17 @@ public class UserService {
             //以下三个参数可能会变化
             User dbuser = dbusers.get(0);
             User updateUser = new User();
+
             updateUser.setGmtModified(System.currentTimeMillis());
             updateUser.setAvatarUrl(user.getAvatarUrl());
             updateUser.setToken(user.getToken());
             updateUser.setName(user.getName());
             UserExample example = new UserExample();
             example.createCriteria().andIdEqualTo(dbuser.getId());
-            userMapper.updateByExampleSelective(updateUser, example);
+            userMapper.updateByExampleSelective(updateUser,example);
 
         }
     }
+
+
 }

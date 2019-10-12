@@ -56,14 +56,15 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-
             user.setAvatarUrl(githubUser.getAvatarUrl());
             //判断是否存在user，相同则不创建，不同则创建
             userService.createOrUpdate(user);
             //发送cookies携带token
-            response.addCookie(new Cookie("token",token));
+            Cookie cookie=new Cookie("token",token);
+            cookie.setPath("/");
+            cookie.setMaxAge(30*60);
+            response.addCookie(cookie);
             //登录成功
-
             return "redirect:/";
         }else {
             //登录失败
