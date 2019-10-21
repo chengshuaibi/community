@@ -16,6 +16,30 @@
         update question
         set
          view_count = view_count + #{viewCount,jdbcType=INTEGER}
+
         where id=#{id}
     </update>
+    <update id="incCommentCount" parameterType="cheng.community.model.Question">
+        update question
+        set
+         comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
+
+        where id=#{id}
+    </update>
+
+    <select id="selectRelated" parameterType="cheng.community.model.Question" resultMap="BaseResultMap">
+        select * from QUESTION
+        <where>
+            <if test="id != null">
+                and id != #{id}
+                /*排除自己*/
+            </if>
+            <if test="tag != null and tag != ''">
+            /*正则表达式标签1|标签2|标签3  */
+                and tag regexp #{tag}
+            </if>
+        </where>
+        order by gmt_create desc limit 20
+    </select>
+
 </mapper>

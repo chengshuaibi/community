@@ -24,6 +24,10 @@ public class SessionINterceptor implements HandlerInterceptor {
     private UserMapper userMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "http://owen.rompy.cn");
+        response.setHeader("Access-Control-Allow-Methods", "GET,POST");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {

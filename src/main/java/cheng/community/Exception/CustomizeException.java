@@ -1,8 +1,7 @@
 package cheng.community.Exception;
 
 /**
- *
- * 枚举自定义异常信息
+ * 自定义异常，方便用枚举类抛异常
  * @author cheng
  * @date 2019/10/10 0010 下午 19:21
  */

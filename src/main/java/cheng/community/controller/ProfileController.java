@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 //菜单栏界面
 @Controller
-public class ProdileController {
+public class ProfileController {
 
 
     @Autowired

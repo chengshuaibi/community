@@ -61,8 +61,7 @@ public class AuthorizeController {
             userService.createOrUpdate(user);
             //发送cookies携带token
             Cookie cookie=new Cookie("token",token);
-            cookie.setPath("/");
-            cookie.setMaxAge(30*60);
+            request.getSession().setAttribute("user",user);
             response.addCookie(cookie);
             //登录成功
             return "redirect:/";

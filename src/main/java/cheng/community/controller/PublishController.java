@@ -1,9 +1,11 @@
 package cheng.community.controller;
 
+import cheng.community.cache.TagCache;
 import cheng.community.dto.QuestionDTO;
 import cheng.community.model.Question;
 import cheng.community.model.User;
 import cheng.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  *
- * 发布界面
+ * 发布问题
  * @author cheng
  * @date 2019/10/5 0005 上午 11:52
  */
@@ -32,12 +34,15 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
+
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -58,6 +63,8 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
+        model.addAttribute("tags", TagCache.get());
+
         /*
          *判断标题等是否为空
          * @param [title, description, tag, request, model]
@@ -72,6 +79,11 @@ public class PublishController {
             return "publish";
         }  if (tag == null|| tag=="") {
             model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
+        String filterinvalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(filterinvalid)){
+            model.addAttribute("error","输入非法标签"+filterinvalid);
             return "publish";
         }
         User user = (User)request.getSession().getAttribute("user");
