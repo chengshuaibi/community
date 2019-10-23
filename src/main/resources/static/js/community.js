@@ -21,6 +21,7 @@ function comment2target(targetId, type, content) {
                 "type": type
             }),
             success: function (response) {
+                debugger;
                 console.log(response);
                 if (response.code == 200) {
                     $("#comment_section").hide();
@@ -73,14 +74,14 @@ function collapseComments(e) {
             e.classList.add("active");
         } else {
             $.getJSON("/comment/" + id, function (data) {
-                if (data=null){
+                if (data.data==null){
                     //展开二级评论
                     comments.addClass("in");
                     // 标记二级评论展开状态
                     e.setAttribute("data-collapse", "in");
                     e.classList.add("active");
                     return;
-                }
+                }else{
                 $.each(data.data.reverse(), function (index, comment) {
                     var mediaLeftElement = $("<div/>", {
                         "class": "media-left"
@@ -118,7 +119,7 @@ function collapseComments(e) {
                 // 标记二级评论展开状态
                 e.setAttribute("data-collapse", "in");
                 e.classList.add("active");
-            });
+            }});
         }
     }
 

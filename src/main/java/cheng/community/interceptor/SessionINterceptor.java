@@ -1,8 +1,11 @@
 package cheng.community.interceptor;
 
+import cheng.community.mapper.NotificationMapper;
 import cheng.community.mapper.UserMapper;
+import cheng.community.model.Notification;
 import cheng.community.model.User;
 import cheng.community.model.UserExample;
+import cheng.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,12 +25,10 @@ import java.util.List;
 public class SessionINterceptor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private NotificationService notificationService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        response.setHeader("Access-Control-Allow-Origin", "http://owen.rompy.cn");
-        response.setHeader("Access-Control-Allow-Methods", "GET,POST");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
@@ -38,6 +39,8 @@ public class SessionINterceptor implements HandlerInterceptor {
                     List<User> users = userMapper.selectByExample(userExample);
                     if (users.size()!=0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        Long unReadCount = notificationService.unReadCount(users.get(0).getId());
+                        request.getSession().setAttribute("unReadCount",unReadCount);
                     }
                     break;
                 }

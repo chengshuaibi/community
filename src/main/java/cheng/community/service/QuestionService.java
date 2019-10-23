@@ -70,7 +70,7 @@ public class QuestionService {
         /*
         *  paginationDTO写入questions注入到index中
         * */
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
 
         return paginationDTO;
     }
@@ -110,7 +110,7 @@ public class QuestionService {
         /*
          *  paginationDTO写入questions注入到index中
          * */
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
 
         return paginationDTO;
     }
